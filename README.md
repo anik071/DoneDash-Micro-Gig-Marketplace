@@ -4,13 +4,22 @@
 
 #### Software Requirements Specification (SRS)
 
-**Submitted By,** Abdul Kader Anik | ID : 232071071
+**Documented By,**
+
+Abdul Kader Anik | ID : 232071071
+
 Shraban Chakma | ID : 231071035
+
 **Document Version** 1.
+
 **Status** Draft
+
 **Date** March 2026
+
 **Tech Stack** Flutter, Firebase, Imgbb
+
 **Platform** Mobile (iOS & Android)
+
 **Prepared For** Mobile Application Development Project
 
 
@@ -28,25 +37,25 @@ labor, academic assistance, and delivery tasks.
 DoneDash will be delivered as a cross-platform mobile application (iOS and Android) built with
 Flutter, backend by Firebase for real-time data and authentication, and Imgbb for profile image
 hosting. The scope includes:
-● Two distinct user roles: Poster and Helper
-● Full job lifecycle management from posting to completion
-● Real-time notifications and status updates
-● Ratings and reviews system for Helpers
-● Filtering and discovery of available gigs
+- Two distinct user roles: Poster and Helper
+- Full job lifecycle management from posting to completion
+- Real-time notifications and status updates
+- Ratings and reviews system for Helpers
+- Filtering and discovery of available gigs
 
 ### 1.3 Objectives
 
 Main objectives of DoneDash :
-● To connect individuals who need quick help with students who want to earn money
-● To provide safe, trusted, campus based gig marketplace
-● To enable flexible allowance for students without a formal job
-● To manage job lifecycle from posting to completion efficiently
+- To connect individuals who need quick help with students who want to earn money
+- To provide safe, trusted, campus based gig marketplace
+- To enable flexible allowance for students without a formal job
+- To manage job lifecycle from posting to completion efficiently
 
 ### 1.4 Targeted Users
 
 Targeted Users are categorized under two terms :
-● Posters : Individuals who needs a job done
-● Helpers : Students who wants to earn some extra cash by completing some tasks
+- Posters : Individuals who needs a job done
+- Helpers : Students who wants to earn some extra cash by completing some tasks
 DoneDash Campus Micro-Gig MarketplacePage
 
 
@@ -111,33 +120,33 @@ DoneDash Campus Micro-Gig MarketplacePage
 ### 2.4 Operating Environment
 
 ```
-● Mobile OS: iOS 13+ and Android 8.0 (API Level 26)+
-● Framework: Flutter 3.x with Dart
-● Backend: Firebase (Authentication, Cloud Firestore, Cloud Storage, FCM)
-● Image Hosting: Imgbb API v
-● Internet: Requires active internet connection
+- Mobile OS: iOS 13+ and Android 8.0 (API Level 26)+
+- Framework: Flutter 3.x with Dart
+- Backend: Firebase (Authentication, Cloud Firestore, Cloud Storage, FCM)
+- Image Hosting: Imgbb API v
+- Internet: Requires active internet connection
 ```
 ### 2.5 Design & Implementation Constraints
 
 ```
-● Must run on Android 8 or above
-● Must use Flutter framework
-● All business logic must be implemented client-side in Flutter or via Firebase Security Rules
+- Must run on Android 8 or above
+- Must use Flutter framework
+- All business logic must be implemented client-side in Flutter or via Firebase Security Rules
 and Cloud Functions
-● Profile images must be uploaded to Imgbb and referenced by URL in Firestore
-● Firebase Free Tier (Spark Plan) limitations must be considered during development
-● Payment processing is out of scope for v1.0 — payment is handled off-platform between
+- Profile images must be uploaded to Imgbb and referenced by URL in Firestore
+- Firebase Free Tier (Spark Plan) limitations must be considered during development
+- Payment processing is out of scope for v1.0 — payment is handled off-platform between
 users
-● No web application is required in v1.0; mobile-only
+- No web application is required in v1.0; mobile-only
 ```
 ### 2.6 Assumptions & Dependencies
 
-● All users are enrolled with a valid email
-● The user must have an internet connection to sync data.
-● Users have access to a smartphone with the app installed
-● Firebase services remain available and stable
-● Imgbb API quota is sufficient for the expected volume of profile uploads
-● Users are responsible for off-platform payment arrangements in v1.
+- All users are enrolled with a valid email
+- The user must have an internet connection to sync data.
+- Users have access to a smartphone with the app installed
+- Firebase services remain available and stable
+- Imgbb API quota is sufficient for the expected volume of profile uploads
+- Users are responsible for off-platform payment arrangements in v1.
 DoneDash Campus Micro-Gig MarketplacePage
 
 
@@ -314,58 +323,58 @@ DoneDash Campus Micro-Gig MarketplacePage
 #### 5.1.1 Frontend Development
 
 ```
-● Flutter 3.x — cross-platform mobile UI framework
-● Dart 3.x — primary programming language
-● Android Studio — main IDE for coding, emulation, and debugging
-● VS Code — lightweight alternative code editor
-● Flutter DevTools — performance profiling and UI inspection
+- Flutter 3.x — cross-platform mobile UI framework
+- Dart 3.x — primary programming language
+- Android Studio — main IDE for coding, emulation, and debugging
+- VS Code — lightweight alternative code editor
+- Flutter DevTools — performance profiling and UI inspection
 ```
 #### 5.1.2 Backend & Cloud Services
 
 ```
-● Firebase Authentication — user login and session management
-● Cloud Firestore — real-time NoSQL database
-● Firebase Cloud Functions — server-side logic and event triggers
-● Firebase Cloud Messaging (FCM) — push notifications
-● Firebase Emulator Suite — local backend testing without live Firebase
+- Firebase Authentication — user login and session management
+- Cloud Firestore — real-time NoSQL database
+- Firebase Cloud Functions — server-side logic and event triggers
+- Firebase Cloud Messaging (FCM) — push notifications
+- Firebase Emulator Suite — local backend testing without live Firebase
 ```
 #### 5.1.3 Image Handling
 
 ```
-● Imgbb API v1 — profile picture upload and CDN hosting
-● image_picker — device camera and gallery access
+- Imgbb API v1 — profile picture upload and CDN hosting
+- image_picker — device camera and gallery access
 ```
 #### 5.1.4 State Management
 
 ```
-● Riverpod — app-wide state and reactive UI updates
+- Riverpod — app-wide state and reactive UI updates
 ```
 #### 5.1.5 Version Control & Collaboration
 
 ```
-● Git — source code versioning
-● GitHub — remote repository and team collaboration
+- Git — source code versioning
+- GitHub — remote repository and team collaboration
 ```
 #### 5.1.6 Design & Prototyping
 
 ```
-● Figma — UI/UX wireframing and screen prototyping
-● Material Design 3 — component and design guidelines
+- Figma — UI/UX wireframing and screen prototyping
+- Material Design 3 — component and design guidelines
 ```
 #### 5.1.7 Testing
 
-● Flutter Test — unit and widget testing
-● Mockito — dependency mocking
-● Postman — manual API endpoint testing
+- Flutter Test — unit and widget testing
+- Mockito — dependency mocking
+- Postman — manual API endpoint testing
 DoneDash Campus Micro-Gig MarketplacePage
 
 
 #### 5.1.8 Build & Deployment
 
 ```
-● Google Play Console — Android app release
-● Apple App Store Connect — iOS app release
-● Firebase App Distribution — internal beta testing
+- Google Play Console — Android app release
+- Apple App Store Connect — iOS app release
+- Firebase App Distribution — internal beta testing
 ```
 ### 5.2 Timeline
 
