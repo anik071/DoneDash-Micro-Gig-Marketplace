@@ -7,12 +7,15 @@ import {
   ViewToken,
   ListRenderItem,
   TouchableOpacity,
-  Text
+  Text,
+  Image
 } from "react-native";
 import slides from "../slides";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
-import { Feather } from "@expo/vector-icons";
+import NextBtn from "./NextBtn";
+const DoneDashLogo = require("../assets/images/donedash_logo.png");
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Slide = {
   id: number;
@@ -20,6 +23,7 @@ type Slide = {
   description: string;
   image: any;
 };
+
 
 const Onboarding = () => {
   const { width } = useWindowDimensions();
@@ -46,11 +50,47 @@ const Onboarding = () => {
   }).current;
 
   const renderItem: ListRenderItem<Slide> = ({ item }) => {
-    return <OnboardingItem item={item} />;
+    return <OnboardingItem item={item} DoneDashLogo={DoneDashLogo}/>;
   };
+
+
+const scrollTo = async() => {
+  if (currentIndex < slides.length - 1 && slidesRef.current) {
+    slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
+  } else {
+    try {
+      await AsyncStorage.setItem('@viewedOnboarding', 'true');
+    } catch (error) {
+      console.log("Error @checkOnboarding: ", error)
+    }
+  }
+};
+
 
   return (
     <View className="flex-1 bg-white">
+            {/* Header */}
+          <View className="flex-row justify-between items-center px-6 pt-12 pb-4">
+  <View className="flex-row items-center gap-2">
+    {/* logo + text together */}
+    <Image
+      source={DoneDashLogo}
+      style={{
+        width: width * 0.1,   // dynamic sizing
+        height: width * 0.1,
+      }}
+      resizeMode="contain"
+    />
+     <View>
+      <Text className="text-xl font-bold text-[#348293]">DoneDash</Text>
+      <Text className="text-sm text-gray-500">Campus micro-gig, done fast</Text>
+    </View>
+  </View>
+
+  <TouchableOpacity>
+    <Text className="text-gray-400 font-semibold text-lg">Skip</Text>
+  </TouchableOpacity>
+</View>
       <View className="flex-3">
         <FlatList<Slide>
           ref={slidesRef}
@@ -74,13 +114,8 @@ const Onboarding = () => {
       </View>
       {/* Paginator */}
       <Paginator data={slides} scrollX={scrollX}/>
-      {/* Bottom Button */}
-      <View className="px-6 pb-12">
-        <TouchableOpacity className="bg-[#348293] w-full py-5 rounded-2xl flex-row items-center justify-center gap-3">
-          <Text className="text-white text-xl font-bold">Get started</Text>
-          <Feather name="arrow-right" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+      {/* Next Button */}
+      <NextBtn scrollTo={scrollTo} currentIndex={currentIndex} totalSlides={slides.length}/>
     </View>
   );
 };

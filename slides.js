@@ -6,7 +6,7 @@ export default [
     description:
       "Earn extra cash or get tasks done by verified students in your campus community.",
     image: require("./assets/images/1.png"),
-    badge: "Gig: Deliver coffee",
+    badge: "Deliver coffee",
     earningBadge: "$15 earned",
     badgeType: "earning",
   },
@@ -17,7 +17,7 @@ export default [
     description:
       "Need a tutor or study partner? Find a fellow student who gets it — and get it done together.",
     image: require("./assets/images/2.png"),
-    badge: "Gig: Tutoring session",
+    badge: "Tutoring session",
     earningBadge: "$20 earned",
     badgeType: "gig",
   },
@@ -28,7 +28,7 @@ export default [
     description:
       "From group projects to campus deliveries — post a gig, find help, and make things happen.",
     image: require("./assets/images/3.png"),
-    badge: "Gig: Team project",
+    badge: "Team project",
     earningBadge: "3 proposals in",
     badgeType: "gig",
   },
