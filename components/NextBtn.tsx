@@ -7,6 +7,10 @@ type NextBtnProps = {
   totalSlides:number;
 };
 
+
+
+
+
 const NextBtn = ({scrollTo, currentIndex, totalSlides}: NextBtnProps) => {
   const isLastSlide = currentIndex === totalSlides - 1;
    // 🔥 Dynamic text
