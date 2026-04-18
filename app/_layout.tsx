@@ -7,6 +7,8 @@ const RootLayout = () => {
   return (
     <SafeAreaProvider>
     <Stack>
+      <Stack.Screen name='index' options={{headerShown: false}}/>
+      <Stack.Screen name='onboardingScreen' options={{headerShown: false}}/>
       <Stack.Screen name='(tabs)' options={{headerShown: false}}/>
     </Stack>
  </SafeAreaProvider>
