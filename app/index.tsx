@@ -6,24 +6,29 @@ import { router } from 'expo-router';
 const Index = () => {
   const [loading, setLoading] = useState(true);
 
-  const checkOnboarding = async () => {
+  const checkFlow = async () => {
     try {
-      const value = await AsyncStorage.getItem('@viewedOnboarding');
+     const hasSeenOnboarding = await AsyncStorage.getItem('@viewedOnboarding');
+    const isLoggedIn = await AsyncStorage.getItem('@isLoggedIn');
 
-      if (value !== null) {
-        router.replace('/(tabs)/feed'); // ✅ go to feed route
-      } else {
-        router.replace('/onboardingScreen'); // ✅ go to onboarding route
-      }
+    if (!hasSeenOnboarding) {
+      router.replace('/onboardingScreen');
+    } else if (!isLoggedIn) {
+      router.replace('/login'); // 👈 go to auth
+    } else {
+      router.replace('/(tabs)/feed'); // 👈 go to app
+    }
+
+
     } catch (error) {
-      console.log("Error @checkOnboarding: ", error);
+      console.log("Error @checkFlow : ", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    checkOnboarding();
+    checkFlow ();
   }, []);
 
   return (
