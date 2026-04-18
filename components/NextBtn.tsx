@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Feather } from '@expo/vector-icons'
+import { router } from 'expo-router';
 type NextBtnProps = {
   scrollTo: () => void;
   currentIndex:number;
@@ -32,7 +33,7 @@ const NextBtn = ({scrollTo, currentIndex, totalSlides}: NextBtnProps) => {
   <Text className="text-sm text-gray-900">
     Already have an account?{" "}
   </Text>
-  <TouchableOpacity>
+  <TouchableOpacity onPress={() => router.replace('/login')}>
     <Text className="font-bold text-sm text-[#348293]">Log in</Text>
   </TouchableOpacity>
 </View>

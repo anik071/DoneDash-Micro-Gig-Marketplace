@@ -4,9 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const AlertsScreen = () => {
-   const clearOnboarding = async()=>{
+   const clearData = async()=>{
         try {
             await AsyncStorage.removeItem('@viewedOnboarding');
+            await AsyncStorage.removeItem('@isLoggedIn');
         } catch (error) {
             console.log("Error @checkOnboarding: ", error)
         }
@@ -16,8 +17,8 @@ const AlertsScreen = () => {
       <Text className="text-lg font-bold text-slate-900">
         AlertsScreen
       </Text>
-      <TouchableOpacity onPress={clearOnboarding}>
-      <Text>Press this to clear onboarding</Text>  
+      <TouchableOpacity onPress={clearData}>
+      <Text>Press this to clear onboarding data and login data</Text>  
             </TouchableOpacity>
     </SafeAreaView>
   )

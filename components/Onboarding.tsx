@@ -66,7 +66,7 @@ const scrollTo = async () => {
   } else {
     try {
       await AsyncStorage.setItem('@viewedOnboarding', 'true');
-      router.replace('/(tabs)/feed'); 
+      router.replace('/login'); 
     } catch (error) {
       console.log("Error @finishOnboarding: ", error);
     }
