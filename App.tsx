@@ -1,12 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import './global.css';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Onboarding from './components/Onboarding';
 import HomeScreen from './components/HomeScreen';
 import { useEffect, useState } from 'react';
-
-
+import "./global.css"
 const Loading = () => (
   <View>
     <ActivityIndicator size="large" />

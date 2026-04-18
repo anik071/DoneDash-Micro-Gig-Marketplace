@@ -7,8 +7,13 @@ type NextBtnProps = {
   totalSlides:number;
 };
 
+
+
+
+
 const NextBtn = ({scrollTo, currentIndex, totalSlides}: NextBtnProps) => {
   const isLastSlide = currentIndex === totalSlides - 1;
+
    // 🔥 Dynamic text
   const getButtonText = () => {
     if (isLastSlide) return "Get Started";
@@ -19,7 +24,7 @@ const NextBtn = ({scrollTo, currentIndex, totalSlides}: NextBtnProps) => {
 
   return (
     <View className="px-6 pb-12">
-        <TouchableOpacity onPress={scrollTo} className="bg-[#348293] w-full py-5 rounded-2xl flex-row items-center justify-center gap-3">
+        <TouchableOpacity   onPress={scrollTo} className="bg-[#348293] w-full py-5 rounded-2xl flex-row items-center justify-center gap-3">
           <Text className="text-white text-xl font-bold">  {getButtonText()}</Text>
           <Feather name="arrow-right" size={24} color="white" />
         </TouchableOpacity>
@@ -31,7 +36,6 @@ const NextBtn = ({scrollTo, currentIndex, totalSlides}: NextBtnProps) => {
     <Text className="font-bold text-sm text-[#348293]">Log in</Text>
   </TouchableOpacity>
 </View>
-
       </View>
   )
 }
