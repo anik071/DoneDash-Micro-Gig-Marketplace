@@ -10,7 +10,7 @@ import {
   Text,
   Image
 } from "react-native";
-import slides from "../slides";
+import slides from "../constants/slides.js";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
 import NextBtn from "./NextBtn";
