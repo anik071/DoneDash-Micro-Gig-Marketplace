@@ -1,14 +1,11 @@
-import { Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import ProposalsScreen from '../../../components/my-jobs/ProposalsScreen';
+import MyJobsScreen from '../../../components/my-jobs/MyJobScreen';
+import { userRoleStore } from '../../../store/userRoleStore';
 
-const MyJobsScreen = () => {
-  return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-lg font-bold text-slate-900">
-        MyJobsScreen
-      </Text>
-    </View>
-  )
-}
+const MyJobsTab = () => {
+  const { isHelper } = userRoleStore();
+  return isHelper ? <MyJobsScreen /> : <ProposalsScreen />;
+};
 
-export default MyJobsScreen
+export default MyJobsTab;

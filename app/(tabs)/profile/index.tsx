@@ -13,10 +13,11 @@ import {
 } from '../../../constants/dummyProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useRouter } from 'expo-router';
+import { userRoleStore } from '../../../store/userRoleStore';
 
 const ProfileScreen = () => {
-  const [isHelper, setIsHelper] = useState(true);
-
+  
+const { isHelper } = userRoleStore();
   const profile = isHelper ? HELPER_PROFILE : POSTER_PROFILE;
 
   const onLogout = async () => {
@@ -81,7 +82,7 @@ const ProfileScreen = () => {
         />
 
         {/* Role switcher — also the demo UI switcher */}
-        <SwitchRoleRow isHelper={isHelper} onToggle={() => setIsHelper(p => !p)} />
+        <SwitchRoleRow  />
 
         {/* Logout */}
         <LogoutRow onLogout={onLogout} />

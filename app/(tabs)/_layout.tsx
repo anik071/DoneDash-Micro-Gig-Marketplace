@@ -3,7 +3,9 @@ import React from 'react'
 import Entypo from '@expo/vector-icons/Entypo'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { userRoleStore } from '../../store/userRoleStore';
 const BottomTabs = () => {
+  const {isHelper} = userRoleStore();
   return (
     <Tabs>
       <Tabs.Screen
@@ -29,8 +31,8 @@ const BottomTabs = () => {
         <Tabs.Screen
         name="my-jobs/index"
         options={{
-          headerShown: false,
-          title: 'My Jobs',
+          headerShown: false, 
+          title: isHelper ? 'My Jobs' : 'Proposals',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="briefcase" size={size} color={color} />
           ),
