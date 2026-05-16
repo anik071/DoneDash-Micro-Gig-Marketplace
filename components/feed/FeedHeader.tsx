@@ -17,14 +17,6 @@ const FeedHeader = ({ name, avatarUri, hasNotification = false, onNotificationPr
     return 'Good evening';
   };
 
-  const clearData = async () => {
-    try {
-      await AsyncStorage.removeItem('@viewedOnboarding');
-      await AsyncStorage.removeItem('@isLoggedIn');
-    } catch (error) {
-      console.log("Error @checkOnboarding: ", error);
-    }
-  };
 
   return (
     <View className="flex-row items-center justify-between px-4 py-3 bg-white">
@@ -34,11 +26,11 @@ const FeedHeader = ({ name, avatarUri, hasNotification = false, onNotificationPr
           source={{ uri: avatarUri }}
           className="w-11 h-11 rounded-full"
         />
-        <TouchableOpacity onPress={clearData}>
+        
         <Text className="text-xl font-bold text-[#0f6e56]">
           {greeting()}, <Text className="text-[#0f6e56]">{name}</Text>
         </Text>
-        </TouchableOpacity>
+        
       </View>
 
       {/* Right: notification bell */}
