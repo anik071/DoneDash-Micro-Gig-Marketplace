@@ -14,6 +14,7 @@ const EditableField = ({ label, value, fieldType = 'text', onSave }: Props) => {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
 
+
   const handleSave = () => {
     onSave(draft);
     setEditing(false);
@@ -26,7 +27,7 @@ const EditableField = ({ label, value, fieldType = 'text', onSave }: Props) => {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
