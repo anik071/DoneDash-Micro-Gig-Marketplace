@@ -12,8 +12,8 @@ import {
 // ─── Colour tokens ─────────────────────────────────────────────────────────────
 const TEAL        = '#1A8FA0';
 const TEAL_DARK   = '#1C7A8A';
-const TEAL_CARD   = '#1D7E8F'; // "Post a new gig" card bg
-const TEAL_LIGHT  = '#C8E9EF'; // "Support Center" card bg
+const TEAL_CARD   = '#1D7E8F'; 
+const TEAL_LIGHT  = '#C8E9EF';
 const GREEN       = '#2E8B2E';
 const BG          = '#EAF3F6';
 const TEXT_DARK   = '#111111';
@@ -22,10 +22,10 @@ const WHITE       = '#FFFFFF';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 // Filter tabs
-const TABS: string[] = ['All', 'Active', 'Completed'];
+const TABS: string[] = ['All', 'Open', 'Active', 'Completed'];
 export default function MyJobsScreen() {
-  const [activeTab, setActiveTab] = useState('All');
 
+  const [activeTab, setActiveTab] = useState('All');
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={BG} />
@@ -35,7 +35,7 @@ export default function MyJobsScreen() {
         {/* Logo + Brand */}
         <View style={styles.brandRow}>
           <View style={styles.avatarCircle}>
-            <Text style={styles.avatarEmoji}>🎩</Text>
+            <Text style={styles.avatarEmoji}>👤</Text>
           </View>
           <Text style={styles.brandName}>DoneDash</Text>
         </View>
@@ -53,7 +53,7 @@ export default function MyJobsScreen() {
         {/* ── Page title row ── */}
         <View style={styles.titleRow}>
           <Text style={styles.pageTitle}>My jobs</Text>
-          <Text style={styles.totalSpent}>Total spent: $43</Text>
+          <Text style={styles.totalSpent}>Total spent: ৳ 100</Text>
         </View>
 
         {/* ── Filter chips ── */}
@@ -79,7 +79,7 @@ export default function MyJobsScreen() {
         </View>
 
         {/* ── Job card 1 – OPEN ── */}
-        <TouchableOpacity style={styles.jobCard} activeOpacity={0.85} onPress={() => viewJobDetails()}>
+        <TouchableOpacity style={styles.jobCard} activeOpacity={0.85} >
           <View style={styles.cardTopRow}>
             <View style={styles.openBadge}>
               <Text style={styles.openBadgeText}>OPEN</Text>
@@ -103,7 +103,7 @@ export default function MyJobsScreen() {
             <View style={styles.activeBadge}>
               <Text style={styles.activeBadgeText}>ACTIVE</Text>
             </View>
-            <Text style={styles.cardPrice}>$18</Text>
+            <Text style={styles.cardPrice}>৳ 450</Text>
           </View>
 
           <Text style={styles.cardTitle}>Calculus tutor session</Text>
@@ -111,11 +111,11 @@ export default function MyJobsScreen() {
           {/* Assigned dashr row */}
           <View style={styles.dashrRow}>
             <View style={styles.dashrAvatar}>
-              <Text style={styles.dashrAvatarText}>AJ</Text>
+              <Text style={styles.dashrAvatarText}>SC</Text>
             </View>
             <View>
-              <Text style={styles.dashrName}>Alex J.</Text>
-              <Text style={styles.dashrLabel}>Assigned Dashr</Text>
+              <Text style={styles.dashrName}>Shraban C.</Text>
+              <Text style={styles.dashrLabel}>Assigned</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingTop: 30,
     paddingHorizontal: 20,
     paddingVertical: 14,
     backgroundColor: BG,

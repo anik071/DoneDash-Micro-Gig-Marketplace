@@ -9,7 +9,8 @@ import {
   StatusBar,
   ImageBackground,
 } from 'react-native';
-
+import { useRouter } from 'expo-router';
+import  ApplyScreen  from './submitProposals';
 const ChevronLeft = ({ color = '#1A8FA0', size = 18 }) => (
   <Text style={{ color, fontSize: size, fontWeight: '400', marginRight: 2 }}>‹</Text>
 );
@@ -47,6 +48,13 @@ const StarRating = ({ rating = 4.0, max = 5 }) => {
 
 // ─── Main Screen ───────────────────────────────────────────────────────────────
 const JobDetailScreen = () => {
+
+    const router = useRouter();
+
+    const proposalSubmission = () => {
+      router.push('./submitProposals');
+    };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#EAF3F6" />
@@ -95,7 +103,7 @@ const JobDetailScreen = () => {
           {/* Description */}
           <Text style={styles.sectionLabel}>DESCRIPTION</Text>
           <Text style={styles.descriptionText}>
-            Need help moving boxes from Room 204 to Room 412. About 8-10 boxes. Should take 1 hour max.
+            Need help moving boxes from Room 1504 to Room 1904. About 8-10 boxes. Should take 30 minutes max.
           </Text>
 
           {/* Info Pills */}
@@ -123,7 +131,7 @@ const JobDetailScreen = () => {
             {/* Location info box */}
             <View style={styles.locationBox}>
               <Text style={styles.locationLabel}>LOCATION</Text>
-              <Text style={styles.locationName}>Campus Center, North Wing</Text>
+              <Text style={styles.locationName}>Campus Center, SMUCT</Text>
             </View>
 
             {/* Map button */}
@@ -132,8 +140,8 @@ const JobDetailScreen = () => {
             </TouchableOpacity>
 
             {/* Apply now button sits at the bottom of this card */}
-            <TouchableOpacity style={styles.applyBtn} activeOpacity={0.85}>
-              <Text style={styles.applyBtnText}>Apply now</Text>
+            <TouchableOpacity style={styles.applyBtn} activeOpacity={0.85} onPress={()=>{proposalSubmission()}}>
+              <Text style={styles.applyBtnText} >Apply now</Text>
               <ArrowRight />
             </TouchableOpacity>
           </ImageBackground>
