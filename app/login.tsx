@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,40 +8,51 @@ import {
   Platform,
   Alert,
   ScrollView,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
-
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import { supabase } from "../lib/supabase";
+import Toast from "react-native-toast-message";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // 👈 State for visibility tracking
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert('Login required', 'Please enter both email and password.');
+    setLoading(true);
+    console.log("details", email, password);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      Toast.show({
+        type: "error",
+        text1: `${error.message}`,
+        position: "top",
+        visibilityTime: 4000,
+        autoHide: true,
+      });
+      setLoading(false);
       return;
     }
-    setLoading(true);
-    try {
-      await AsyncStorage.setItem('@isLoggedIn', 'true');
-        router.replace('/(tabs)/feed');
-    } catch (error) {
-      Alert.alert('Login failed', 'Unable to complete login. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+
+    router.replace("/(tabs)/feed");
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1"
-      style={{ backgroundColor: '#EAF4F6' }}
+      style={{ backgroundColor: "#EAF4F6" }}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Top brand name */}
         <View className="items-center pt-14 pb-6">
           <Text className="text-2xl font-bold text-[#348293]">DoneDash</Text>
@@ -49,14 +60,18 @@ const Login = () => {
 
         {/* Title */}
         <View className="items-center px-6 mb-6">
-          <Text className="text-4xl font-bold text-black mb-2 text-center">Welcome back</Text>
-          <Text className="text-base text-gray-500">Sign in to manage your campus gigs</Text>
+          <Text className="text-4xl font-bold text-black mb-2 text-center">
+            Welcome back
+          </Text>
+          <Text className="text-base text-gray-500">
+            Sign in to manage your campus gigs
+          </Text>
         </View>
 
         {/* Card */}
         <View
           className="mx-4 rounded-2xl bg-white px-6 py-8"
-          style={{ shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10 }}
+          style={{ shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 10 }}
         >
           {/* Email */}
           <Text className="text-xs font-semibold text-gray-500 mb-2 tracking-widest uppercase">
@@ -80,19 +95,26 @@ const Login = () => {
               Password
             </Text>
             <TouchableOpacity>
-              <Text className="text-sm font-medium text-[#348293]">Forgot password?</Text>
+              <Text className="text-sm font-medium text-[#348293]">
+                Forgot password?
+              </Text>
             </TouchableOpacity>
           </View>
-          <View className="rounded-xl bg-gray-100 px-4 py-3 mb-6">
+
+          {/* Password Input Wrapper - Converted to flex-row for layout matching */}
+          <View className="rounded-xl bg-gray-100 px-4 py-3 mb-6 flex-row items-center">
             <TextInput
               value={password}
               onChangeText={setPassword}
               placeholder="••••••••"
-              secureTextEntry
+              secureTextEntry={!showPassword} // 👈 Toggles hiding mechanics dynamically
               autoCapitalize="none"
-              className="text-base text-gray-900"
+              className="flex-1 text-base text-gray-900" // 👈 flex-1 pushes toggle trigger icon all the way right
               placeholderTextColor="#9CA3AF"
             />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Text style={{ fontSize: 20 }}>{showPassword ? "🙈" : "👁️"}</Text>
+            </TouchableOpacity>
           </View>
 
           {/* Login button */}
@@ -100,10 +122,10 @@ const Login = () => {
             onPress={handleLogin}
             disabled={loading}
             className="rounded-2xl py-4 items-center mb-6"
-            style={{ backgroundColor: '#2D7D8F' }}
+            style={{ backgroundColor: "#2D7D8F" }}
           >
             <Text className="text-base font-semibold text-white">
-              {loading ? 'Signing in...' : 'Log in'}
+              {loading ? "Signing in..." : "Log in"}
             </Text>
           </TouchableOpacity>
 
@@ -118,17 +140,12 @@ const Login = () => {
 
           {/* Social buttons */}
           <View className="flex-row gap-3">
-            <TouchableOpacity
-              className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 bg-white py-3 gap-2"
-            >
-              {/* Google G icon placeholder */}
+            <TouchableOpacity className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 bg-white py-3 gap-2">
               <Text style={{ fontSize: 16 }}>G</Text>
               <Text className="text-sm font-medium text-gray-700">Google</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 bg-white py-3 gap-2"
-            >
+            <TouchableOpacity className="flex-1 flex-row items-center justify-center rounded-2xl border border-gray-200 bg-white py-3 gap-2">
               <Text style={{ fontSize: 14 }}>iOS</Text>
               <Text className="text-sm font-medium text-gray-700">Apple</Text>
             </TouchableOpacity>
@@ -138,18 +155,22 @@ const Login = () => {
         {/* Sign up link */}
         <View className="items-center mt-8 px-6">
           <Text className="text-sm text-gray-500">
-            New to the campus marketplace?{' '}
-            <Text onPress={() => router.push('/signup')} className="text-[#4CAF50] font-semibold">Create an account</Text>
+            New to the campus marketplace?{" "}
+            <Text
+              onPress={() => router.push("/signup")}
+              className="text-[#2D7D8F] font-semibold"
+            >
+              Create an account
+            </Text>
           </Text>
         </View>
 
         {/* Footer */}
         <View className="items-center mt-auto py-8">
           <Text className="text-xs text-gray-400 uppercase tracking-widest">
-            DoneDash © 2024 • Editorial gigs for students
+            DoneDash © 2026 • Editorial gigs for students
           </Text>
         </View>
-
       </ScrollView>
     </KeyboardAvoidingView>
   );

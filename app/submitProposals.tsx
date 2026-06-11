@@ -5,13 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
   TextInput,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 // ─── Colour tokens ─────────────────────────────────────────────────────────────
 const TEAL         = '#1A8FA0';
 const TEAL_BADGE   = '#B2DCE5';

@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Job } from '../../types/job';
+import { useRouter } from 'expo-router';
 
 const BADGE_STYLES: Record<string, string> = {
   Physical:  'bg-teal-50  text-teal-800',
@@ -12,9 +13,11 @@ const BADGE_STYLES: Record<string, string> = {
 
 type Props = { job: Job };
 
-const JobCard = ({ job }: Props) => (
-  <TouchableOpacity
+const JobCard = ({ job }: Props) => {
+  const router = useRouter();
+  return (<TouchableOpacity
     activeOpacity={0.85}
+     onPress={() => router.push(`/jobDetails?id=${job.id}`)}
     className="bg-white rounded-2xl p-4 border border-gray-100"
   >
     {/* Top row: badge + pay */}
@@ -51,7 +54,7 @@ const JobCard = ({ job }: Props) => (
         <Text className="text-xs text-gray-400">{job.postedAgo}</Text>
       </View>
     </View>
-  </TouchableOpacity>
-);
+  </TouchableOpacity>)
+};
 
 export default JobCard;

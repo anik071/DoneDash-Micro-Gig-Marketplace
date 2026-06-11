@@ -47,7 +47,6 @@ const Onboarding = () => {
   ).current;
 
   const skip = async () => {
-  await AsyncStorage.setItem('@viewedOnboarding', 'true');
   router.replace('/(tabs)/feed');
 };
 
@@ -65,7 +64,6 @@ const scrollTo = async () => {
     slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
   } else {
     try {
-      await AsyncStorage.setItem('@viewedOnboarding', 'true');
       router.replace('/login'); 
     } catch (error) {
       console.log("Error @finishOnboarding: ", error);

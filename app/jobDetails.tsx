@@ -5,33 +5,33 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
   ImageBackground,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import  ApplyScreen  from './submitProposals';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { DUMMY_JOBS } from '../constants/dummyJobs';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 const ChevronLeft = ({ color = '#1A8FA0', size = 18 }) => (
   <Text style={{ color, fontSize: size, fontWeight: '400', marginRight: 2 }}>‹</Text>
 );
- 
+
 const ClockIcon = ({ color = '#1A8FA0', size = 16 }) => (
   <Text style={{ color, fontSize: size }}>⏱</Text>
 );
- 
+
 const PeopleIcon = ({ color = '#1A8FA0', size = 16 }) => (
   <Text style={{ color, fontSize: size }}>👥</Text>
 );
- 
+
 const MapIcon = ({ color = '#fff', size = 20 }) => (
   <Text style={{ color, fontSize: size }}>⊞</Text>
 );
- 
+
 const ArrowRight = ({ color = '#fff', size = 18 }) => (
   <Text style={{ color, fontSize: size, marginLeft: 8 }}>→</Text>
 );
 
-// ─── Star Rating ───────────────────────────────────────────────────────────────
 const StarRating = ({ rating = 4.0, max = 5 }) => {
   const filled = Math.floor(rating);
   return (
@@ -46,14 +46,29 @@ const StarRating = ({ rating = 4.0, max = 5 }) => {
   );
 };
 
-// ─── Main Screen ───────────────────────────────────────────────────────────────
 const JobDetailScreen = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  const job = DUMMY_JOBS.find(j => j.id === id);
 
-    const router = useRouter();
+  if (!job) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Job not found.</Text>
+      </View>
+    );
+  }
 
-    const proposalSubmission = () => {
-      router.push('./submitProposals');
-    };
+  const initials = job.posterName
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
+  const proposalSubmission = () => {
+    router.push('./submitProposals');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -61,15 +76,26 @@ const JobDetailScreen = () => {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
+
+        {/* ── Header ── */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <ChevronLeft size={24} />
+            <Text style={styles.backText}>Back</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Job Details</Text>
+          <View style={{ width: 70 }} />
+        </View>
 
         {/* ── Job Card ── */}
         <View style={styles.jobCard}>
 
           {/* Badges */}
           <View style={styles.badgeRow}>
-            <View style={styles.physicalBadge}>
-              <Text style={styles.physicalBadgeText}>PHYSICAL</Text>
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryBadgeText}>{job.category.toUpperCase()}</Text>
             </View>
             <View style={styles.openBadge}>
               <View style={styles.openDot} />
@@ -79,23 +105,22 @@ const JobDetailScreen = () => {
 
           {/* Title + Payout */}
           <View style={styles.titleRow}>
-            <Text style={styles.jobTitle}>Help me move dorm stuff</Text>
+            <Text style={styles.jobTitle}>{job.title}</Text>
             <View style={styles.payoutBox}>
-              <Text style={styles.payoutAmount}>৳ 250</Text>
-              <Text style={styles.payoutLabel}>EST. PAYOUT</Text>
+              <Text style={styles.payoutAmount}>৳{job.payAmount}</Text>
+              <Text style={styles.payoutLabel}>{job.payType.toUpperCase()}</Text>
             </View>
           </View>
 
           {/* Poster card */}
           <View style={styles.posterCard}>
-            {/* Avatar */}
             <View style={styles.avatarWrapper}>
               <View style={styles.avatarCircle}>
-                <Text style={styles.avatarInitials}>AK</Text>
+                <Text style={styles.avatarInitials}>{initials}</Text>
               </View>
             </View>
             <View style={styles.posterInfo}>
-              <Text style={styles.posterName}>Abdul Kader Anik.</Text>
+              <Text style={styles.posterName}>{job.posterName}</Text>
               <StarRating rating={4.0} />
             </View>
           </View>
@@ -103,13 +128,13 @@ const JobDetailScreen = () => {
           {/* Description */}
           <Text style={styles.sectionLabel}>DESCRIPTION</Text>
           <Text style={styles.descriptionText}>
-            Need help moving boxes from Room 1504 to Room 1904. About 8-10 boxes. Should take 30 minutes max.
+            Need help with this task. Please reach out if you have the relevant skills and availability.
           </Text>
 
           {/* Info Pills */}
           <View style={styles.infoPill}>
             <ClockIcon />
-            <Text style={styles.pillText}>Deadline: Today 5pm</Text>
+            <Text style={styles.pillText}>Posted: {job.postedAgo}</Text>
           </View>
 
           <View style={styles.infoPill}>
@@ -121,27 +146,23 @@ const JobDetailScreen = () => {
 
         {/* ── Location Card (Map) ── */}
         <View style={styles.locationCard}>
-          {/* Map background — replace uri with your actual map image or MapView */}
           <ImageBackground
             source={{ uri: 'https://via.placeholder.com/600x260/8DB87A/8DB87A' }}
             style={styles.mapBg}
             imageStyle={styles.mapBgImage}
-            resizeMode="cover">
-
-            {/* Location info box */}
+            resizeMode="cover"
+          >
             <View style={styles.locationBox}>
               <Text style={styles.locationLabel}>LOCATION</Text>
               <Text style={styles.locationName}>Campus Center, SMUCT</Text>
             </View>
 
-            {/* Map button */}
             <TouchableOpacity style={styles.mapIconBtn} activeOpacity={0.8}>
               <MapIcon />
             </TouchableOpacity>
 
-            {/* Apply now button sits at the bottom of this card */}
-            <TouchableOpacity style={styles.applyBtn} activeOpacity={0.85} onPress={()=>{proposalSubmission()}}>
-              <Text style={styles.applyBtnText} >Apply now</Text>
+            <TouchableOpacity style={styles.applyBtn} activeOpacity={0.85} onPress={proposalSubmission}>
+              <Text style={styles.applyBtnText}>Apply now</Text>
               <ArrowRight />
             </TouchableOpacity>
           </ImageBackground>
@@ -152,14 +173,11 @@ const JobDetailScreen = () => {
   );
 };
 
-// ─── Styles ────────────────────────────────────────────────────────────────────
 const TEAL = '#1A8FA0';
-const TEAL_LIGHT = '#E0F3F7';
-const GREEN_DARK = '#2E7D32';
-const GREEN_MID = '#43A047';
 const TEXT_DARK = '#1C1C1C';
 const TEXT_GRAY = '#6B7280';
 const STAR_GOLD = '#D4890A';
+const GREEN_DARK = '#2E7D32';
 const BG = '#EAF3F6';
 
 const styles = StyleSheet.create({
@@ -167,9 +185,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: BG,
   },
-
-
-  // ── Scroll ───────────────────────────────────────────────────────────────────
   scrollView: {
     flex: 1,
   },
@@ -177,6 +192,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
     gap: 16,
+  },
+
+  // ── Header ───────────────────────────────────────────────────────────────────
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    marginBottom: 4,
+  },
+  backBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    width: 70,
+  },
+  backText: {
+    color: TEAL,
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: TEXT_DARK,
   },
 
   // ── Job Card ─────────────────────────────────────────────────────────────────
@@ -190,21 +231,19 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
-
-  // Badges
   badgeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 18,
   },
-  physicalBadge: {
+  categoryBadge: {
     backgroundColor: '#B2E0EC',
     paddingHorizontal: 16,
     paddingVertical: 7,
     borderRadius: 20,
   },
-  physicalBadgeText: {
+  categoryBadgeText: {
     color: '#0E6878',
     fontSize: 12,
     fontWeight: '700',
@@ -231,8 +270,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
   },
-
-  // Title + Payout
   titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -262,8 +299,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginTop: -2,
   },
-
-  // Poster card
   posterCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -323,8 +358,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 4,
   },
-
-  // Description
   sectionLabel: {
     fontSize: 12,
     fontWeight: '700',
@@ -338,8 +371,6 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     marginBottom: 22,
   },
-
-  // Info Pills
   infoPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -358,7 +389,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // ── Location + Apply Card ────────────────────────────────────────────────────
+  // ── Location Card ─────────────────────────────────────────────────────────────
   locationCard: {
     borderRadius: 20,
     overflow: 'hidden',
@@ -375,7 +406,6 @@ const styles = StyleSheet.create({
   mapBgImage: {
     borderRadius: 20,
   },
-
   locationBox: {
     position: 'absolute',
     top: 16,
@@ -397,7 +427,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: TEXT_DARK,
   },
-
   mapIconBtn: {
     position: 'absolute',
     bottom: 72,
@@ -409,7 +438,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   applyBtn: {
     flexDirection: 'row',
     justifyContent: 'center',
