@@ -11,6 +11,7 @@ import CategoryPicker from '../../../components/post/CategoryPicker';
 import DeadlinePicker from '../../../components/post/DeadlinePicker';
 import PayInput from '../../../components/post/PayInput';
 import ImageUploader from '../../../components/post/ImageUploader';
+import { supabase } from '../../../lib/supabase';
 import { Ionicons } from '@expo/vector-icons';
 const EMPTY: JobForm = {
   title: '', description: '', category: null,
@@ -26,6 +27,7 @@ const inputStyle = {
 const PostJobScreen = () => {
   const router = useRouter();
   const [form, setForm] = useState<JobForm>(EMPTY);
+  const [submitting, setSubmitting] = useState(false);
   const set = (key: keyof JobForm, val: any) =>
     setForm(prev => ({ ...prev, [key]: val }));
 
@@ -38,13 +40,65 @@ const PostJobScreen = () => {
     if (!form.pay.trim())         { Alert.alert('Missing', 'Pay amount is required.'); return false; }
     return true;
   };
+  const uploadImages = async (uris: string[],jobId:string)=>{
+      const urls: string[] = [];
+      for (const uri of uris){
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const fileExt = uri.split('.').pop();
+        const fileName = `${jobId}/${Date.now()}.${fileExt}`;
+        const { error } =  await supabase.storage
+        .from('job-images').upload(fileName, blob, {contentType: `image/${fileExt}`});
+        if(error) throw error;
+        const {data} = supabase.storage.from('job-images').getPublicUrl(fileName);
+        urls.push(data.publicUrl);
+      }
+      return urls;
+  };
 
-  const submit = () => {
+  const submit = async() => {
     if (!validate()) return;
-    console.log('Submitting job:', form);
-    // TODO: insert into Supabase jobs table
+    setSubmitting(true);
+    try {
+      const {data: { user }} = await supabase.auth.getUser();
+      if(!user){
+        Alert.alert('Not authenticated', 'Please log in to post a job.');
+        setSubmitting(false);
+        return;
+      }
+      const { data: job, error: insertError } = await supabase
+      .from('jobs').insert({
+        poster_id: user.id,
+        title: form.title.trim(),
+        description: form.description.trim(),
+        category: form.category,
+        deadline: form.deadline,
+        location: form.location.trim(),
+        pay: form.pay.trim(),
+        images: [],
+      }).select()
+      .single();
+      if (insertError) throw insertError;
+      let imageUrls: string[] = [];
+    if (form.images.length > 0) {
+      imageUrls = await uploadImages(form.images, job.id);
+      const { error: updateError } = await supabase
+        .from('jobs')
+        .update({ images: imageUrls })
+        .eq('id', job.id);
+      if (updateError) throw updateError;
+    }
+
     Alert.alert('Posted!', 'Your job has been posted successfully.');
     setForm(EMPTY);
+    router.back();
+
+    } catch (error: any) {
+       console.error('Error posting job:', error);
+    Alert.alert('Error', error.message ?? 'Something went wrong. Please try again.');
+  } finally {
+    setSubmitting(false);
+  }
   };
 
   return (
@@ -127,10 +181,12 @@ const PostJobScreen = () => {
           {/* Post button */}
           <TouchableOpacity
             onPress={submit}
+            disabled={submitting}
             style={{
-              backgroundColor: '#2d7a3a', borderRadius: 12,
+              backgroundColor: submitting ? '#2d7a3a': '#9ca3af',
               paddingVertical: 16, alignItems: 'center', marginTop: 8,
             }}
+            
             activeOpacity={0.85}
           >
             <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Post job</Text>
