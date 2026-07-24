@@ -7,20 +7,13 @@ import RecentReviews from "../../../components/profile/RecentReviews";
 import ActiveJobCard from "../../../components/profile/ActiveJobCard";
 import SwitchRoleRow from "../../../components/profile/SwitchRoleRow";
 import LogoutRow from "../../../components/profile/LogoutRow";
-import {
-  HELPER_PROFILE,
-  POSTER_PROFILE,
-  DUMMY_REVIEWS,
-  POSTER_REVIEWS,
-  POSTER_ACTIVE_JOBS,
-} from "../../../constants/dummyProfile";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useRouter } from "expo-router";
-import { userRoleStore } from "../../../store/userRoleStore";
 import { supabase } from "../../../lib/supabase";
+import { useProfile } from "../../../hooks/useProfile";
 const ProfileScreen = () => {
-  const { isHelper } = userRoleStore();
-  const profile = isHelper ? HELPER_PROFILE : POSTER_PROFILE;
+  const { profile, loading, error, activeJobs } = useProfile();
+
+  const isHelper = profile?.role === "helper";
 
   const router = useRouter();
   const onLogout = async () => {
@@ -33,6 +26,23 @@ const ProfileScreen = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <Text>Loading profile...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center px-6">
+        <Text className="text-red-500 text-center">
+          {error || "Unable to load profile."}
+        </Text>
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Nav bar */}
@@ -46,56 +56,50 @@ const ProfileScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Identity card */}
         <ProfileCard
-          name={profile.name}
-          badge={profile.badge}
-          rating={profile.rating}
-          reviewCount={profile.reviewCount}
-          avatarUri={profile.avatarUri}
+          name={`${profile.first_name} ${profile.last_name}`}
+          badge={profile.role}
+          rating={profile.average_rating ?? 0}
+          reviewCount={0}
+          avatarUri={profile.avatar ?? ""}
           badgeColor={isHelper ? "#0f6e56" : "#185fa5"}
         />
-
         {/* Stats */}
         {isHelper ? (
           <StatsCard
             left={{
               label: "JOBS\nCOMPLETED",
-              value: String((HELPER_PROFILE as any).jobsCompleted),
+              value: String(profile.completed_jobs ?? 0),
             }}
             right={{
               label: "TOTAL\nEARNINGS",
-              value: `৳${(HELPER_PROFILE as any).totalEarnings.toLocaleString()}`,
+              value: `৳${Number(profile.total_earnings ?? 0).toLocaleString()}`,
             }}
           />
         ) : (
           <StatsCard
             left={{
               label: "JOBS\nPOSTED",
-              value: String((POSTER_PROFILE as any).jobsPosted),
+              value: "--",
             }}
             right={{
               label: "TOTAL\nSPENT",
-              value: `৳${(POSTER_PROFILE as any).totalSpent.toLocaleString()}`,
+              value: "--",
             }}
           />
         )}
-
         {/* Poster-only: active jobs */}
         {!isHelper && (
           <ActiveJobCard
-            jobs={POSTER_ACTIVE_JOBS}
-            onSeeAll={() => console.log("see all jobs")}
+            jobs={activeJobs}
+            onSeeAll={() => console.log("See all jobs")}
           />
         )}
-
         {/* Reviews */}
-        <RecentReviews
+        {/* <RecentReviews
           reviews={isHelper ? DUMMY_REVIEWS : POSTER_REVIEWS}
           onSeeAll={() => console.log("see all reviews")}
-        />
-
+        /> */}
         {/* Role switcher — also the demo UI switcher */}
-        <SwitchRoleRow />
-
         {/* Logout */}
         <LogoutRow onLogout={onLogout} />
       </ScrollView>
