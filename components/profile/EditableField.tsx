@@ -1,119 +1,118 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { pickProfileImage } from "../../services/imageUPloadService";
 
-type Props = {
+interface Props {
   label: string;
   value: string;
-  fieldType?: 'text' | 'email' | 'phone' | 'address' | 'avatar';
-  onSave: (val: string) => void;
-};
 
-const EditableField = ({ label, value, fieldType = 'text', onSave }: Props) => {
+  onSave?: (value: string) => void;
+
+  fieldType?: "text" | "email" | "phone" | "address" | "avatar";
+
+  editable?: boolean;
+}
+
+const EditableField = ({
+  label,
+  value,
+  onSave,
+  fieldType = "text",
+  editable = true,
+}: Props) => {
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
+  const [tempValue, setTempValue] = useState(value);
 
-
-  const handleSave = () => {
-    onSave(draft);
+  const save = () => {
+    onSave?.(tempValue);
     setEditing(false);
   };
 
-  const handleCancel = () => {
-    setDraft(value);
-    setEditing(false);
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setDraft(uri);
-      onSave(uri);
-    }
-  };
-
-  // Avatar field — special treatment
-  if (fieldType === 'avatar') {
+  if (fieldType === "avatar") {
     return (
-      <View className="py-4 border-b border-gray-100">
-        <Text className="text-xs font-semibold text-gray-400 tracking-widest mb-3">
-          {label.toUpperCase()}
-        </Text>
-        <View className="flex-row items-center justify-between">
+      <View className="items-center mt-6">
+        <View>
           <Image
-            source={{ uri: value }}
-            className="w-16 h-16 rounded-full"
+            source={{
+              uri: value || "https://i.pravatar.cc/150",
+            }}
+            className="w-28 h-28 rounded-full"
           />
+
           <TouchableOpacity
-            onPress={pickImage}
-            className="flex-row items-center gap-1 px-4 py-2 rounded-xl bg-teal-50"
+            className="absolute bottom-0 right-0 bg-teal-700 w-9 h-9 rounded-full items-center justify-center"
+            onPress={async () => {
+              try {
+                const image = await pickProfileImage();
+
+                if (image) {
+                  onSave?.(image);
+                }
+              } catch (error: any) {
+                console.log(error.message);
+              }
+            }}
           >
-            <Ionicons name="camera-outline" size={16} color="#0f6e56" />
-            <Text className="text-sm font-medium text-teal-700">Change photo</Text>
+            <Ionicons name="camera" size={18} color="white" />
           </TouchableOpacity>
         </View>
+
+        <Text className="text-sm text-gray-500 mt-3">Change profile photo</Text>
       </View>
     );
   }
 
   return (
-    <View className="py-4 border-b border-gray-100">
-      <Text className="text-xs font-semibold text-gray-400 tracking-widest mb-1">
-        {label.toUpperCase()}
-      </Text>
+    <View className="mb-4">
+      <Text className="text-sm font-medium text-gray-500 mb-2">{label}</Text>
 
-      {!editing ? (
-        // View mode
-        <View className="flex-row items-center justify-between mt-1">
-          <Text className="text-base text-gray-800 flex-1 mr-4">{value || '—'}</Text>
-          <TouchableOpacity
-            onPress={() => { setDraft(value); setEditing(true); }}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Text className="text-sm font-medium text-teal-700">Edit</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        // Edit mode
-        <View className="mt-2">
+      <View
+        className={`flex-row items-center rounded-xl px-4 py-3 ${
+          editable ? "bg-gray-100" : "bg-gray-200"
+        }`}
+      >
+        {editing && editable ? (
           <TextInput
-            value={draft}
-            onChangeText={setDraft}
-            autoFocus
-            keyboardType={
-              fieldType === 'email' ? 'email-address'
-              : fieldType === 'phone' ? 'phone-pad'
-              : 'default'
-            }
-            multiline={fieldType === 'address'}
-            numberOfLines={fieldType === 'address' ? 3 : 1}
-            className={`bg-gray-50 border border-teal-300 rounded-xl px-4 py-3 text-base text-gray-800 ${
-              fieldType === 'address' ? 'h-20 text-top' : ''
-            }`}
+            value={tempValue}
+            onChangeText={setTempValue}
+            multiline={fieldType === "address"}
+            editable={editable}
+            className="flex-1 text-base text-gray-900"
+            style={{
+              minHeight: fieldType === "address" ? 80 : undefined,
+              textAlignVertical: fieldType === "address" ? "top" : "center",
+            }}
           />
-          <View className="flex-row gap-3 mt-3">
-            <TouchableOpacity
-              onPress={handleCancel}
-              className="flex-1 py-2.5 rounded-xl border border-gray-200 items-center"
-            >
-              <Text className="text-sm font-medium text-gray-500">Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleSave}
-              className="flex-1 py-2.5 rounded-xl bg-teal-700 items-center"
-            >
-              <Text className="text-sm font-medium text-white">Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+        ) : (
+          <Text
+            className={`flex-1 text-base ${
+              editable ? "text-gray-900" : "text-gray-500"
+            }`}
+          >
+            {value || "Not added"}
+          </Text>
+        )}
+
+        {editable && (
+          <TouchableOpacity
+            onPress={() => {
+              if (editing) {
+                save();
+              } else {
+                setTempValue(value);
+                setEditing(true);
+              }
+            }}
+          >
+            <Ionicons
+              name={editing ? "checkmark" : "create-outline"}
+              size={20}
+              color="#0f6e56"
+            />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
