@@ -23,11 +23,11 @@ export const uploadImages = async (uris: string[]) => {
       // Compress large images
       if ((fileInfo.size ?? 0) > MAX_BYTE_SIZE) {
         const context = ImageManipulator.manipulate(uri);
-        context.resize({ width: 2000 });
+        context.resize({ width: 800 });
         const image = await context.renderAsync();
 
         const compressed = await image.saveAsync({
-          compress: 0.7,
+          compress: 0.5,
           format: SaveFormat.JPEG,
         });
 
