@@ -1,16 +1,13 @@
 import { supabase } from "../lib/supabase";
 
 export const getJobDetails = async (jobId: string) => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { data, error } = await supabase
     .from("jobs")
     .select(
       `
       *,
-      profiles!jobs_poster_id_fkey(
+
+      poster:profiles!jobs_poster_id_fkey(
         id,
         first_name,
         last_name,
@@ -20,25 +17,31 @@ export const getJobDetails = async (jobId: string) => {
         average_rating,
         completed_jobs
       ),
-      proposals(
+
+      accepted_helper:profiles!jobs_accepted_helper_id_fkey(
         id,
-        helper_id,
-        status
+        first_name,
+        last_name,
+        avatar,
+        university,
+        department,
+        average_rating,
+        completed_jobs,
+        whatsapp,
+        telegram,
+        imo
       )
-    `,
+      `,
     )
     .eq("id", jobId)
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.log("Job details error:", error);
+    throw error;
+  }
 
-  const myProposal = data.proposals?.find(
-    (proposal: any) => proposal.helper_id === user?.id,
-  );
+  console.log("Job details:", data);
 
-  return {
-    ...data,
-    hasApplied: !!myProposal,
-    myProposal,
-  };
+  return data;
 };

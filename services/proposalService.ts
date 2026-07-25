@@ -6,12 +6,13 @@ export const getJobProposals = async (jobId: string) => {
     .select(
       `
       id,
-      message,
-      proposed_amount,
+      job_id,
+      helper_id,
+      cover_letter,
       status,
       created_at,
 
-      profiles!proposals_helper_id_fkey(
+      profiles!proposals_helper_id_fkey (
         id,
         first_name,
         last_name,
@@ -19,7 +20,7 @@ export const getJobProposals = async (jobId: string) => {
         average_rating,
         completed_jobs
       )
-      `,
+    `,
     )
     .eq("job_id", jobId)
     .order("created_at", {
@@ -30,7 +31,6 @@ export const getJobProposals = async (jobId: string) => {
 
   return data;
 };
-
 export const hasCommunicationMethod = async () => {
   const {
     data: { user },

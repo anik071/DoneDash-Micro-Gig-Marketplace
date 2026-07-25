@@ -3,54 +3,90 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+
 import { useMyPostedJobs } from "../../hooks/useMyPostedJobs";
 import PosterJobCard from "./PosterJobCard";
-import { useProfile } from "../../hooks/useProfile";
+import ActivePosterJobCard from "./ActivePosterJobCard";
 
 const PosterJobsScreen = () => {
   const router = useRouter();
-  const { jobs = [], loading, error } = useMyPostedJobs();
-  const { profile } = useProfile();
-  const isHelper = profile?.role === "helper";
-  const activeJobsCount = jobs.filter((j) => j.status !== "COMPLETED").length;
 
-  const handleJobPress = (jobId: string) => {
+  const { jobs = [] } = useMyPostedJobs();
+
+  const activeJobs = jobs.filter(
+    (job) => job.status === "IN PROGRESS" || job.status === "COMPLETED",
+  );
+
+  const openJobs = jobs.filter(
+    (job) => job.status !== "IN PROGRESS" && job.status !== "COMPLETED",
+  );
+
+  const handleJobPress = (job: any) => {
+    if (job.status === "OPEN") {
+      router.push({
+        pathname: "/receivedProposals",
+        params: {
+          jobId: job.id,
+        },
+      });
+
+      return;
+    }
+
     router.push({
-      pathname: "/receivedProposals",
-      params: { jobId },
+      pathname: "/acceptedJobsScreen",
+      params: {
+        jobId: job.id,
+      },
     });
   };
 
+  const renderItem = ({ item }: { item: any }) => {
+    if (item.status === "IN PROGRESS" || item.status === "COMPLETED") {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => handleJobPress(item)}
+        >
+          <ActivePosterJobCard item={item} />
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => handleJobPress(item)}
+      >
+        <PosterJobCard item={item} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f1f5f9" }}>
-      <View style={{ paddingHorizontal: 20, paddingVertical: 14 }}>
-        <Text style={{ fontSize: 22, fontWeight: "700", color: "#0f6e56" }}>
-          {isHelper ? "Applied Jobs" : "My Posted Jobs"}
-        </Text>
-        <Text style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
-          {activeJobsCount} active
+    <SafeAreaView className="flex-1 bg-slate-100">
+      <View className="px-5 py-4">
+        <Text className="text-2xl font-bold text-[#0f6e56]">My Jobs</Text>
+
+        <Text className="text-gray-500 mt-1">
+          {activeJobs.length} active • {openJobs.length} open
         </Text>
       </View>
 
       <FlatList
         data={jobs}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={() => handleJobPress(item.id)}
-          >
-            <PosterJobCard item={item} />
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
+        renderItem={renderItem}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 30,
+        }}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View style={{ alignItems: "center", paddingTop: 80 }}>
+          <View className="items-center pt-24">
             <Ionicons name="briefcase-outline" size={48} color="#d1d5db" />
-            <Text style={{ color: "#9ca3af", fontSize: 15, marginTop: 12 }}>
-              No jobs yet
-            </Text>
+
+            <Text className="text-gray-400 mt-3">No jobs yet</Text>
           </View>
         }
       />

@@ -8,11 +8,11 @@ import LoadingScreen from "../components/common/LoadingScreen";
 import JobProposalsScreen from "../components/my-jobs/JobProposalsScreen";
 
 import { useJobProposals } from "../hooks/useJobProposals";
-
 import {
   acceptProposal,
   hasCommunicationMethod,
 } from "../services/proposalService";
+import { Stack } from "expo-router";
 
 const ReceivedProposals = () => {
   const { jobId } = useLocalSearchParams<{ jobId: string }>();
@@ -42,7 +42,7 @@ const ReceivedProposals = () => {
         return;
       }
 
-      await acceptProposal(proposal);
+      await acceptProposal(proposal.id, proposal.job_id, proposal.helper_id);
 
       Toast.show({
         type: "success",
@@ -50,7 +50,7 @@ const ReceivedProposals = () => {
         text2: "The helper has been assigned to this job.",
       });
 
-      refreshProposals();
+      router.replace("/(tabs)/my-jobs");
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
@@ -66,7 +66,17 @@ const ReceivedProposals = () => {
     );
   }
 
-  return <JobProposalsScreen proposals={proposals} onAccept={handleAccept} />;
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <JobProposalsScreen proposals={proposals} onAccept={handleAccept} />
+    </>
+  );
 };
 
 export default ReceivedProposals;
