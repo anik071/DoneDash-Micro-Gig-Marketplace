@@ -11,9 +11,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
 import LoadingScreen from "../components/common/LoadingScreen";
-import JobHeroCard from "../components/jobDetails/JobHeroCard";
 import JobDetailsHeader from "../components/jobDetails/JobDetailsHeader";
 import { useJobDetails } from "../hooks/useJobDetails";
+import JobHeroCard from "../components/jobDetails/JobHeroCard";
 
 const JobDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,6 +23,7 @@ const JobDetailScreen = () => {
   const router = useRouter();
 
   const { job, loading, error } = useJobDetails(id as string);
+  console.log("job from job details--->", job);
 
   if (loading) return <LoadingScreen />;
 
@@ -54,14 +55,16 @@ const JobDetailScreen = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#EAF3F6" />
 
       <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-4 pb-6"
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 16,
+          paddingBottom: 24,
+        }}
         showsVerticalScrollIndicator={false}
       >
         <JobDetailsHeader />
 
         <JobHeroCard job={job} />
-
         <View className="mt-5">
           <TouchableOpacity
             activeOpacity={0.85}
