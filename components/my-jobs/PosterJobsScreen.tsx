@@ -12,11 +12,13 @@ const PosterJobsScreen = () => {
   const router = useRouter();
 
   const { jobs = [] } = useMyPostedJobs();
-
+  console.log("jobs from my poster jobs screen -->", jobs);
   const activeJobs = jobs.filter(
-    (job) => job.status === "IN PROGRESS" || job.status === "COMPLETED",
+    (job) =>
+      job.status === "IN PROGRESS" ||
+      job.status === "SUBMITTED" ||
+      job.status === "COMPLETED",
   );
-
   const openJobs = jobs.filter(
     (job) => job.status !== "IN PROGRESS" && job.status !== "COMPLETED",
   );
@@ -42,7 +44,11 @@ const PosterJobsScreen = () => {
   };
 
   const renderItem = ({ item }: { item: any }) => {
-    if (item.status === "IN PROGRESS" || item.status === "COMPLETED") {
+    if (
+      item.status === "IN PROGRESS" ||
+      item.status === "SUBMITTED" ||
+      item.status === "COMPLETED"
+    ) {
       return (
         <TouchableOpacity
           activeOpacity={0.9}

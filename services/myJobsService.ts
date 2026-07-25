@@ -24,7 +24,10 @@ export const getMyPostedJobs = async () => {
 
       accepted_helper_id,
 
-      proposals(id),
+      proposals(
+        id,
+        status
+      ),
 
       helper:accepted_helper_id(
         id,
@@ -46,12 +49,18 @@ export const getMyPostedJobs = async () => {
 
   if (error) throw error;
 
-  return data.map((job) => ({
-    ...job,
-    proposal_count: job.proposals?.length ?? 0,
-  }));
-};
+  return data.map((job: any) => {
+    const acceptedProposal = job.proposals?.find(
+      (proposal: any) => proposal.status === "ACCEPTED",
+    );
 
+    return {
+      ...job,
+      proposal_count: job.proposals?.length ?? 0,
+      proposal: acceptedProposal ?? null,
+    };
+  });
+};
 export const getPosterActiveJobs = async () => {
   const {
     data: { user },
@@ -72,7 +81,12 @@ export const getPosterActiveJobs = async () => {
       location,
       status,
 
-      profiles!jobs_accepted_helper_id_fkey(
+      proposals(
+        id,
+        status
+      ),
+
+      helper:profiles!jobs_accepted_helper_id_fkey(
         id,
         first_name,
         last_name,
@@ -86,10 +100,20 @@ export const getPosterActiveJobs = async () => {
       `,
     )
     .eq("poster_id", user.id)
-    .eq("status", "IN PROGRESS")
+    .in("status", ["IN PROGRESS", "SUBMITTED"])
     .order("updated_at", { ascending: false });
 
   if (error) throw error;
 
-  return data;
+  return data.map((job: any) => {
+    const acceptedProposal = job.proposals?.find(
+      (proposal: any) =>
+        proposal.status === "ACCEPTED" || proposal.status === "SUBMITTED",
+    );
+
+    return {
+      ...job,
+      proposal: acceptedProposal ?? null,
+    };
+  });
 };

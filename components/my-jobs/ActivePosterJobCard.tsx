@@ -2,12 +2,14 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
+import { useRouter } from "expo-router";
 
 type Props = {
   item: any;
 };
 
 const ActivePosterJobCard = ({ item }: Props) => {
+  const router = useRouter();
   const helper = item.helper;
 
   const helperName = helper
@@ -74,8 +76,30 @@ const ActivePosterJobCard = ({ item }: Props) => {
       {/* Header */}
 
       <View className="flex-row justify-between items-center">
-        <View className="bg-cyan-100 rounded-full px-3 py-1">
-          <Text className="text-cyan-700 text-xs font-bold">IN PROGRESS</Text>
+        <View
+          className={`rounded-full px-3 py-1 ${
+            item.status === "SUBMITTED"
+              ? "bg-indigo-100"
+              : item.status === "COMPLETED"
+                ? "bg-emerald-100"
+                : "bg-cyan-100"
+          }`}
+        >
+          <Text
+            className={`text-xs font-bold ${
+              item.status === "SUBMITTED"
+                ? "text-indigo-700"
+                : item.status === "COMPLETED"
+                  ? "text-emerald-700"
+                  : "text-cyan-700"
+            }`}
+          >
+            {item.status === "SUBMITTED"
+              ? "WORK SUBMITTED"
+              : item.status === "COMPLETED"
+                ? "COMPLETED"
+                : "IN PROGRESS"}
+          </Text>
         </View>
 
         <Text className="text-emerald-700 font-bold text-xl">
@@ -153,6 +177,25 @@ const ActivePosterJobCard = ({ item }: Props) => {
             }
           />
         </View>
+        {item.status === "SUBMITTED" && (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() =>
+              router.push({
+                pathname: "/reviewSubmission",
+                params: {
+                  proposalId: item.proposal?.id,
+                  jobId: item.id,
+                },
+              })
+            }
+            className="bg-indigo-600 rounded-2xl py-4 items-center mt-6"
+          >
+            <Text className="text-white font-bold text-base">
+              Review Submitted Work
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
