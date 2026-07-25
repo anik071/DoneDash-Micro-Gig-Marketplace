@@ -8,8 +8,7 @@ import FilterChips from "../../../components/feed/FilterChips";
 import FeedHeader from "../../../components/feed/FeedHeader";
 import FeedSearch from "../../../components/feed/FeedSearch";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
+import LoadingScreen from "../../../components/common/LoadingScreen";
 const FeedScreen = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,13 +35,7 @@ const FeedScreen = () => {
 
   const hasActiveFilters = searchQuery.length > 0 || activeFilter !== "All";
 
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center">
-        <Text>Loading jobs...</Text>
-      </SafeAreaView>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   if (error) {
     return (

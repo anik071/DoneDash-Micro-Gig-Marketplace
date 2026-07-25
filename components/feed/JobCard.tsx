@@ -66,10 +66,10 @@ const JobCard = ({ job }: Props) => {
           </View>
 
           <View className="items-end">
-            <Text className="text-lg font-bold text-teal-700">{job.pay}</Text>
-
             {job.budget && (
-              <Text className="text-xs text-gray-400">${job.budget}</Text>
+              <Text className="text-lg font-bold text-teal-700">
+                ৳ {job.budget}
+              </Text>
             )}
           </View>
         </View>

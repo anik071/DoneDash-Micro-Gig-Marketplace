@@ -10,6 +10,7 @@ import LogoutRow from "../../../components/profile/LogoutRow";
 import { router, useRouter } from "expo-router";
 import { supabase } from "../../../lib/supabase";
 import { useProfile } from "../../../hooks/useProfile";
+import LoadingScreen from "../../../components/common/LoadingScreen";
 const ProfileScreen = () => {
   const { profile, loading, error, activeJobs } = useProfile();
 
@@ -26,13 +27,7 @@ const ProfileScreen = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center">
-        <Text>Loading profile...</Text>
-      </SafeAreaView>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   if (error || !profile) {
     return (

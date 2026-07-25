@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 
 import EditableField from "../../components/profile/EditableField";
 import { useEditProfile } from "../../hooks/useEditProfile";
+import LoadingScreen from "../../components/common/LoadingScreen";
 
 const EditProfileScreen = () => {
   const router = useRouter();
@@ -57,13 +58,7 @@ const EditProfileScreen = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#0f6e56" />
-      </SafeAreaView>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
