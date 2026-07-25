@@ -68,7 +68,11 @@ const JobDetailScreen = () => {
         <JobHeroCard job={job} />
         <JobLocationCard location={job.location} />
       </ScrollView>
-      <JobActionBar budget={job.budget} onApply={proposalSubmission} />
+      <JobActionBar
+        budget={job.budget}
+        hasApplied={job.hasApplied}
+        onApply={proposalSubmission}
+      />
     </SafeAreaView>
   );
 };

@@ -11,7 +11,7 @@ import {
 
 export const useSubmitProposal = (jobId: string) => {
   const router = useRouter();
-
+  const [showCommunicationModal, setShowCommunicationModal] = useState(false);
   const [proposal, setProposal] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -33,21 +33,7 @@ export const useSubmitProposal = (jobId: string) => {
       const hasCommunication = await hasCommunicationMethod();
 
       if (!hasCommunication) {
-        Alert.alert(
-          "Communication Required",
-          "Please add at least one communication method before applying.",
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            {
-              text: "Edit Profile",
-              onPress: () => router.push("/profileEdit/edit"),
-            },
-          ],
-        );
-
+        setShowCommunicationModal(true);
         return;
       }
 
@@ -88,5 +74,7 @@ export const useSubmitProposal = (jobId: string) => {
     setProposal,
     loading,
     submit,
+    showCommunicationModal,
+    setShowCommunicationModal,
   };
 };

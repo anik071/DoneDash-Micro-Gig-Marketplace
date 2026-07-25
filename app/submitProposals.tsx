@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 
 import SubmitProposalHeader from "../components/submitProposal/SubmitProposalHeader";
 import ProposalJobCard from "../components/submitProposal/ProposalJobCard";
@@ -11,6 +11,7 @@ import SubmitProposalButton from "../components/submitProposal/SubmitProposalBut
 
 import { useJobDetails } from "../hooks/useJobDetails";
 import { useSubmitProposal } from "../hooks/useSubmitProposal";
+import ActionRequiredModal from "../components/common/ActionRequiredModal";
 
 const SubmitProposalScreen = () => {
   const { jobId } = useLocalSearchParams<{ jobId: string }>();
@@ -22,6 +23,8 @@ const SubmitProposalScreen = () => {
     setProposal,
     loading: submitting,
     submit,
+    showCommunicationModal,
+    setShowCommunicationModal,
   } = useSubmitProposal(jobId);
 
   if (loading || !job) return null;
@@ -45,6 +48,17 @@ const SubmitProposalScreen = () => {
 
         <SubmitProposalButton loading={submitting} onPress={submit} />
       </ScrollView>
+      <ActionRequiredModal
+        visible={showCommunicationModal}
+        title="One More Step"
+        description="Add at least one communication method so posters can contact you after accepting your proposal."
+        primaryText="Add Communication Method"
+        onPrimaryPress={() => {
+          setShowCommunicationModal(false);
+          router.push("/profileEdit/edit");
+        }}
+        onSecondaryPress={() => setShowCommunicationModal(false)}
+      />
     </SafeAreaView>
   );
 };

@@ -1,16 +1,28 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = {
-  name: string;
-  avatarUri: string;
+  firstName: string;
+  fullName: string;
+  avatarUri?: string | null;
   hasNotification?: boolean;
   onNotificationPress?: () => void;
 };
 
+// Helper function to extract initials safely
+const getInitials = (name?: string) => {
+  if (!name) return "";
+
+  const words = name.trim().split(/\s+/);
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
+
 const FeedHeader = ({
-  name,
+  firstName,
+  fullName,
   avatarUri,
   hasNotification = false,
   onNotificationPress,
@@ -22,19 +34,26 @@ const FeedHeader = ({
     return "Good evening";
   };
 
+  const initials = getInitials(fullName);
+
   return (
     <View className="flex-row items-center justify-between px-4 py-3 bg-white">
-      {/* Left: avatar + greeting */}
       <View className="flex-row items-center gap-2.5">
-        <Image
-          source={{
-            uri: avatarUri || "https://i.pravatar.cc/150",
-          }}
-          className="w-11 h-11 rounded-full"
-        />
+        {avatarUri ? (
+          <Image
+            source={{ uri: avatarUri }}
+            className="w-11 h-11 rounded-full"
+          />
+        ) : (
+          <View className="w-11 h-11 rounded-full bg-teal-800 items-center justify-center">
+            <Text className="text-white text-base font-bold tracking-wider">
+              {initials}
+            </Text>
+          </View>
+        )}
 
         <Text className="text-xl font-bold text-[#0f6e56]">
-          {greeting()}, <Text className="text-[#0f6e56]">{name}</Text>
+          {greeting()}, <Text className="text-[#0f6e56]">{firstName}</Text>
         </Text>
       </View>
 

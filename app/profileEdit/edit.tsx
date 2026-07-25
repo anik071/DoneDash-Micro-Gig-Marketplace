@@ -102,6 +102,7 @@ const EditProfileScreen = () => {
         <EditableField
           label="Profile Photo"
           value={form.avatar}
+          name={`${form.first_name} ${form.last_name}`}
           fieldType="avatar"
           onSave={(image) => updateField("avatar", image)}
         />

@@ -47,7 +47,8 @@ const FeedScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <FeedHeader
-        name={currentUser?.first_name ?? ""}
+        firstName={currentUser?.first_name ?? ""}
+        fullName={`${currentUser?.first_name} ${currentUser?.last_name}`}
         avatarUri={currentUser?.avatar ?? ""}
         hasNotification
         onNotificationPress={() => console.log("notifications pressed")}
