@@ -2,33 +2,45 @@ import React from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { DUMMY_MY_JOBS } from "../../constants/dummyProposals";
-import MyJobCard from "./MyJobCard";
 import { useRouter } from "expo-router";
+import { useMyPostedJobs } from "../../hooks/useMyPostedJobs";
+import PosterJobCard from "./PosterJobCard";
+import { useProfile } from "../../hooks/useProfile";
 
-const MyJobsScreen = () => {
+const PosterJobsScreen = () => {
   const router = useRouter();
+  const { jobs = [], loading, error } = useMyPostedJobs();
+  const { profile } = useProfile();
+  const isHelper = profile?.role === "helper";
+  const activeJobsCount = jobs.filter((j) => j.status !== "COMPLETED").length;
+
+  const handleJobPress = (jobId: string) => {
+    router.push({
+      pathname: "/receivedProposals",
+      params: { jobId },
+    });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f1f5f9" }}>
       <View style={{ paddingHorizontal: 20, paddingVertical: 14 }}>
         <Text style={{ fontSize: 22, fontWeight: "700", color: "#0f6e56" }}>
-          My Jobs
+          {isHelper ? "Applied Jobs" : "My Posted Jobs"}
         </Text>
         <Text style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
-          {DUMMY_MY_JOBS.filter((j) => j.status !== "Completed").length} active
+          {activeJobsCount} active
         </Text>
       </View>
 
       <FlatList
-        data={DUMMY_MY_JOBS}
+        data={jobs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={() => router.push(`/completeJob?id=${item.id}`)}
+            onPress={() => handleJobPress(item.id)}
           >
-            <MyJobCard item={item} />
+            <PosterJobCard item={item} />
           </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
@@ -46,4 +58,4 @@ const MyJobsScreen = () => {
   );
 };
 
-export default MyJobsScreen;
+export default PosterJobsScreen;

@@ -3,11 +3,7 @@ import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useProfile } from "../../hooks/useProfile";
 const BottomTabs = () => {
-  const { profile, loading } = useProfile();
-  if (loading) return;
-  const isHelper = profile?.role === "helper";
   return (
     <Tabs>
       <Tabs.Screen
@@ -34,7 +30,7 @@ const BottomTabs = () => {
         name="my-jobs/index"
         options={{
           headerShown: false,
-          title: isHelper ? "My Jobs" : "Proposals",
+          title: "My Jobs",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="briefcase"

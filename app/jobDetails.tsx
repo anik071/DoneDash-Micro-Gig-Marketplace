@@ -14,6 +14,8 @@ import LoadingScreen from "../components/common/LoadingScreen";
 import JobDetailsHeader from "../components/jobDetails/JobDetailsHeader";
 import { useJobDetails } from "../hooks/useJobDetails";
 import JobHeroCard from "../components/jobDetails/JobHeroCard";
+import JobActionBar from "../components/jobDetails/JobActionBar";
+import JobLocationCard from "../components/jobDetails/JobLocationCard";
 
 const JobDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,7 +25,6 @@ const JobDetailScreen = () => {
   const router = useRouter();
 
   const { job, loading, error } = useJobDetails(id as string);
-  console.log("job from job details--->", job);
 
   if (loading) return <LoadingScreen />;
 
@@ -58,32 +59,16 @@ const JobDetailScreen = () => {
         contentContainerStyle={{
           flexGrow: 1,
           paddingHorizontal: 16,
-          paddingBottom: 24,
+          paddingBottom: 120,
         }}
         showsVerticalScrollIndicator={false}
       >
         <JobDetailsHeader />
 
         <JobHeroCard job={job} />
-        <View className="mt-5">
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={proposalSubmission}
-            className="bg-[#0f6e56] rounded-xl py-4 flex-row items-center justify-center"
-          >
-            <Text className="text-white text-base font-semibold">
-              Apply now
-            </Text>
-
-            <Ionicons
-              name="arrow-forward"
-              size={18}
-              color="#FFF"
-              style={{ marginLeft: 8 }}
-            />
-          </TouchableOpacity>
-        </View>
+        <JobLocationCard location={job.location} />
       </ScrollView>
+      <JobActionBar budget={job.budget} onApply={proposalSubmission} />
     </SafeAreaView>
   );
 };

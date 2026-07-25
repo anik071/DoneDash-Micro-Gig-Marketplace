@@ -1,103 +1,61 @@
-import React, { useRef, useState } from "react";
-import { Text } from "react-native";
+import React, { useState } from "react";
 import {
   View,
   Image,
+  TouchableOpacity,
   FlatList,
   Dimensions,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
 } from "react-native";
+
+import JobImageViewer from "./JobImageViewer";
 
 const { width } = Dimensions.get("window");
 
-interface Props {
+type Props = {
   images: string[];
-}
-
-const IMAGE_WIDTH = width - 72;
+};
 
 const JobGallery = ({ images }: Props) => {
-  const [active, setActive] = useState(0);
-
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const index = Math.round(event.nativeEvent.contentOffset.x / IMAGE_WIDTH);
-
-    setActive(index);
-  };
+  const [viewer, setViewer] = useState(false);
+  const [selected, setSelected] = useState(0);
 
   if (!images.length) return null;
 
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View className="mb-5">
       <FlatList
-        data={images}
         horizontal
         pagingEnabled
+        data={images}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(_, index) => index.toString()}
-        onMomentumScrollEnd={onScroll}
-        renderItem={({ item }) => (
-          <Image
-            source={{ uri: item }}
-            style={{
-              width: IMAGE_WIDTH,
-              height: 220,
-              borderRadius: 18,
-              marginRight: 12,
+        keyExtractor={(_, i) => i.toString()}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => {
+              setSelected(index);
+              setViewer(true);
             }}
-            resizeMode="cover"
-          />
+          >
+            <Image
+              source={{ uri: item }}
+              className="rounded-3xl"
+              style={{
+                width: width - 72,
+                height: 230,
+              }}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         )}
       />
 
-      {/* Counter */}
-
-      <View
-        style={{
-          position: "absolute",
-          top: 12,
-          right: 12,
-          backgroundColor: "rgba(0,0,0,.45)",
-          paddingHorizontal: 10,
-          paddingVertical: 4,
-          borderRadius: 20,
-        }}
-      >
-        <View>
-          <Text
-            style={{
-              color: "#fff",
-              fontWeight: "600",
-            }}
-          >
-            {active + 1}/{images.length}
-          </Text>
-        </View>
-      </View>
-
-      {/* Dots */}
-
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          marginTop: 12,
-        }}
-      >
-        {images.map((_, index) => (
-          <View
-            key={index}
-            style={{
-              width: active === index ? 18 : 8,
-              height: 8,
-              borderRadius: 4,
-              marginHorizontal: 4,
-              backgroundColor: active === index ? "#0f6e56" : "#d1d5db",
-            }}
-          />
-        ))}
-      </View>
+      <JobImageViewer
+        visible={viewer}
+        images={images}
+        initialIndex={selected}
+        onClose={() => setViewer(false)}
+      />
     </View>
   );
 };
