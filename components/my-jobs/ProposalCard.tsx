@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
   item: any;
-  onAccept: (id: string) => void;
+  onAccept: (proposal: any) => void;
 };
 
 const ProposalCard = ({ item, onAccept }: Props) => {
@@ -16,167 +16,66 @@ const ProposalCard = ({ item, onAccept }: Props) => {
 
   const initials = helperName
     .split(" ")
-    .map((word: string) => word[0])
+    .map((w: string) => w[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
 
   return (
-    <View
-      style={{
-        backgroundColor: "#fff",
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: "#000",
-        shadowOpacity: 0.04,
-        shadowRadius: 8,
-        elevation: 2,
-      }}
-    >
-      {/* Helper Header */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "flex-start",
-          marginBottom: 12,
-        }}
-      >
+    <View className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
+      <View className="flex-row">
         {helper?.avatar ? (
           <Image
             source={{ uri: helper.avatar }}
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 28,
-              marginRight: 12,
-            }}
+            className="w-14 h-14 rounded-full mr-3"
           />
         ) : (
-          <View
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 28,
-              backgroundColor: "#9cc7d1",
-              justifyContent: "center",
-              alignItems: "center",
-              marginRight: 12,
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: 18,
-              }}
-            >
-              {initials}
-            </Text>
+          <View className="w-14 h-14 rounded-full bg-teal-300 justify-center items-center mr-3">
+            <Text className="text-white font-bold text-lg">{initials}</Text>
           </View>
         )}
 
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "700",
-              color: "#111827",
-            }}
-          >
+        <View className="flex-1">
+          <Text className="text-base font-bold text-gray-900">
             {helperName}
           </Text>
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 3,
-            }}
-          >
+          <View className="flex-row items-center mt-1">
             <Ionicons name="star" size={13} color="#f59e0b" />
 
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: "600",
-                color: "#374151",
-                marginLeft: 4,
-              }}
-            >
+            <Text className="ml-1 font-semibold text-gray-700">
               {helper?.average_rating ?? 0}
             </Text>
 
-            <Text
-              style={{
-                fontSize: 13,
-                color: "#9ca3af",
-                marginLeft: 4,
-              }}
-            >
+            <Text className="ml-1 text-gray-400">
               ({helper?.completed_jobs ?? 0} jobs)
             </Text>
           </View>
         </View>
 
-        {/* Proposed Amount */}
-        <View style={{ alignItems: "flex-end" }}>
-          <Text
-            style={{
-              fontSize: 17,
-              fontWeight: "700",
-              color: "#0f6e56",
-            }}
-          >
-            ৳{item.proposed_amount}
-          </Text>
+        <View className="items-end">
+          <View className="bg-yellow-100 px-3 py-1 rounded-full">
+            <Text className="text-yellow-800 text-xs font-bold">
+              {item.status}
+            </Text>
+          </View>
 
-          <Text
-            style={{
-              fontSize: 10,
-              fontWeight: "600",
-              color: "#9ca3af",
-              letterSpacing: 0.5,
-            }}
-          >
-            PROPOSED PAY
+          <Text className="text-xs text-gray-400 mt-2">
+            {new Date(item.created_at).toLocaleDateString()}
           </Text>
         </View>
       </View>
 
-      {/* Message */}
-
-      <Text
-        style={{
-          fontSize: 13,
-          color: "#4b5563",
-          lineHeight: 19,
-          marginBottom: 14,
-        }}
-        numberOfLines={4}
-      >
-        {item.message || "No message provided."}
+      <Text numberOfLines={4} className="text-gray-600 leading-5 mt-4 mb-5">
+        {item.cover_letter}
       </Text>
 
-      {/* Accept Button */}
-
       <TouchableOpacity
-        onPress={() => onAccept(item.id)}
-        style={{
-          backgroundColor: "#0f6e56",
-          borderRadius: 12,
-          paddingVertical: 13,
-          alignItems: "center",
-        }}
         activeOpacity={0.85}
+        onPress={() => onAccept(item)}
+        className="bg-emerald-600 rounded-xl py-3 items-center"
       >
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 15,
-            fontWeight: "600",
-          }}
-        >
+        <Text className="text-white font-semibold text-base">
           Accept {helper?.first_name ?? "Helper"}
         </Text>
       </TouchableOpacity>

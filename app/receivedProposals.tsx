@@ -1,46 +1,72 @@
 import React from "react";
-import { View, Text, FlatList } from "react-native";
-
+import { View, Text, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
 
-import { useLocalSearchParams } from "expo-router";
+import LoadingScreen from "../components/common/LoadingScreen";
+import JobProposalsScreen from "../components/my-jobs/JobProposalsScreen";
 
 import { useJobProposals } from "../hooks/useJobProposals";
-import ProposalCard from "../components/my-jobs/ProposalCard";
+
+import {
+  acceptProposal,
+  hasCommunicationMethod,
+} from "../services/proposalService";
 
 const ReceivedProposals = () => {
-  const { jobId } = useLocalSearchParams();
-  const { proposals, loading, error } = useJobProposals(jobId as string);
-  console.log("from my job proposals", proposals);
+  const { jobId } = useLocalSearchParams<{ jobId: string }>();
 
-  if (loading) {
+  const router = useRouter();
+
+  const { proposals, loading, error, refreshProposals } =
+    useJobProposals(jobId);
+
+  const handleAccept = async (proposal: any) => {
+    try {
+      const hasCommunication = await hasCommunicationMethod();
+
+      if (!hasCommunication) {
+        Toast.show({
+          type: "info",
+          text1: "Communication Required",
+          text2: "Add a communication method before accepting a helper.",
+          position: "bottom",
+          autoHide: false,
+          onPress: () => {
+            Toast.hide();
+            router.push("/profileEdit/edit");
+          },
+        });
+
+        return;
+      }
+
+      await acceptProposal(proposal);
+
+      Toast.show({
+        type: "success",
+        text1: "Helper Accepted",
+        text2: "The helper has been assigned to this job.",
+      });
+
+      refreshProposals();
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    }
+  };
+
+  if (loading) return <LoadingScreen />;
+
+  if (error) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Loading proposals...</Text>
-      </View>
+      <SafeAreaView className="flex-1 justify-center items-center bg-slate-100">
+        <Text>{error}</Text>
+      </SafeAreaView>
     );
   }
 
-  return (
-    <SafeAreaView className="flex-1 bg-slate-100">
-      <View className="px-5 py-4">
-        <Text className="text-2xl font-bold text-green-700">
-          Proposals ({proposals.length})
-        </Text>
-      </View>
-
-      <FlatList
-        data={proposals}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ProposalCard item={item} onAccept={() => {}} />
-        )}
-        contentContainerStyle={{
-          paddingHorizontal: 16,
-        }}
-      />
-    </SafeAreaView>
-  );
+  return <JobProposalsScreen proposals={proposals} onAccept={handleAccept} />;
 };
 
 export default ReceivedProposals;

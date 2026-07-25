@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { getJobDetails } from "../services/jobDetailsService";
+import { useFocusEffect } from "expo-router";
 
 export const useJobDetails = (jobId: string) => {
   const [job, setJob] = useState<any>(null);
@@ -21,11 +22,11 @@ export const useJobDetails = (jobId: string) => {
     }
   }, [jobId]);
 
-  useEffect(() => {
-    if (jobId) {
+  useFocusEffect(
+    useCallback(() => {
       fetchJob();
-    }
-  }, [fetchJob]);
+    }, []),
+  );
 
   return {
     job,

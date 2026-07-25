@@ -86,3 +86,41 @@ export const submitProposal = async (jobId: string, coverLetter: string) => {
 
   if (error) throw error;
 };
+
+export const acceptProposal = async (
+  proposalId: string,
+  jobId: string,
+  helperId: string,
+) => {
+  // Accept selected proposal
+  const { error: acceptError } = await supabase
+    .from("proposals")
+    .update({
+      status: "ACCEPTED",
+    })
+    .eq("id", proposalId);
+
+  if (acceptError) throw acceptError;
+
+  // Reject every other proposal
+  const { error: rejectError } = await supabase
+    .from("proposals")
+    .update({
+      status: "REJECTED",
+    })
+    .eq("job_id", jobId)
+    .neq("id", proposalId);
+
+  if (rejectError) throw rejectError;
+
+  // Update the job
+  const { error: jobError } = await supabase
+    .from("jobs")
+    .update({
+      status: "IN PROGRESS",
+      accepted_helper_id: helperId,
+    })
+    .eq("id", jobId);
+
+  if (jobError) throw jobError;
+};

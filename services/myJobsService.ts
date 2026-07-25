@@ -13,15 +13,17 @@ export const getMyPostedJobs = async () => {
     .from("jobs")
     .select(
       `
-      id,
-      title,
-      category,
-      budget,
-      status,
-      created_at,
-      accepted_helper_id,
-      deadline
-      `,
+    id,
+    title,
+    description,
+    category,
+    budget,
+    deadline,
+    status,
+    created_at,
+    accepted_helper_id,
+    proposals(id)
+`,
     )
     .eq("poster_id", user.id)
     .order("created_at", {
@@ -30,5 +32,8 @@ export const getMyPostedJobs = async () => {
 
   if (error) throw error;
 
-  return data;
+  return data.map((job) => ({
+    ...job,
+    proposal_count: job.proposals?.length ?? 0,
+  }));
 };
