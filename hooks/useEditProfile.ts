@@ -42,6 +42,7 @@ export const useEditProfile = () => {
   });
 
   const [globalError, setGlobalError] = useState("");
+
   const updateField = (key: keyof EditProfileForm, value: string) => {
     setForm((prev) => ({
       ...prev,
@@ -135,6 +136,7 @@ export const useEditProfile = () => {
       }
 
       await updateProfile(form);
+
       Toast.show({
         type: "success",
         text1: "Profile Updated",

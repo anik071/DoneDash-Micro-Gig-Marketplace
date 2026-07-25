@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { pickProfileImage } from "../../services/imageUPloadService";
-
+import { pickProfileImage } from "../../services/imageUploadService";
 interface Props {
   label: string;
   value: string;

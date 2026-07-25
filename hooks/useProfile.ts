@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 
 import { Profile } from "../types/profile";
 import { getProfile, getActiveJobs } from "../services/profileService";
-
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 export const useProfile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activeJobs, setActiveJobs] = useState<any[]>([]);
@@ -26,10 +27,11 @@ export const useProfile = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfile();
+    }, []),
+  );
   return {
     profile,
     activeJobs,
