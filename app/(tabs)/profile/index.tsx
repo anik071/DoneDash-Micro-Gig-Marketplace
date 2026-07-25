@@ -38,6 +38,7 @@ const ProfileScreen = () => {
       </SafeAreaView>
     );
   }
+
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Nav bar */}

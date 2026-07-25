@@ -1,6 +1,6 @@
 import { supabase } from "../lib/supabase";
 import { EditProfileForm } from "../types/editProfile";
-
+import { uploadImages } from "../utils/uploadImages";
 export const getEditableProfile = async () => {
   const {
     data: { user },
@@ -33,11 +33,21 @@ export const updateProfile = async (form: EditProfileForm) => {
   if (!form.whatsapp.trim() && !form.telegram.trim() && !form.imo.trim()) {
     throw new Error("Please add at least one communication method.");
   }
+  let avatarUrl = form.avatar;
 
+  if (avatarUrl && avatarUrl.startsWith("file://")) {
+    const uploaded = await uploadImages([avatarUrl]);
+
+    if (!uploaded.length) {
+      throw new Error("Failed to upload profile image.");
+    }
+
+    avatarUrl = uploaded[0];
+  }
   const { error } = await supabase
     .from("profiles")
     .update({
-      avatar: form.avatar,
+      avatar: avatarUrl,
 
       first_name: form.first_name.trim(),
       last_name: form.last_name.trim(),

@@ -3,7 +3,6 @@ import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { userRoleStore } from "../../store/userRoleStore";
 import { useProfile } from "../../hooks/useProfile";
 const BottomTabs = () => {
   const { profile, loading } = useProfile();
