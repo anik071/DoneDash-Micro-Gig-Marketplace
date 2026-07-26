@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, Linking } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 type Props = {
   item: any;
@@ -208,6 +209,31 @@ const HelperJobCard = ({ item, onComplete }: Props) => {
             >
               <Text className="text-white font-bold text-base">
                 Complete Job
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {job?.status === "SUBMITTED" && (
+            <View className="mt-6 bg-indigo-50 rounded-2xl p-4">
+              <Text className="text-indigo-700 font-semibold">
+                Waiting for the poster to send payment.
+              </Text>
+            </View>
+          )}
+
+          {job?.status === "PAYMENT_SENT" && (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                router.push({
+                  pathname: "/confirmPayment",
+                  params: { proposalId: item.id, jobId: job.id },
+                })
+              }
+              className="mt-6 bg-amber-600 rounded-2xl py-4 items-center"
+            >
+              <Text className="text-white font-bold text-base">
+                Confirm Payment Received
               </Text>
             </TouchableOpacity>
           )}

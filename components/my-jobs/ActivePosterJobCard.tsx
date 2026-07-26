@@ -75,38 +75,37 @@ const ActivePosterJobCard = ({ item }: Props) => {
     <View className="bg-white rounded-3xl p-5 mb-4 shadow-sm">
       {/* Header */}
 
-      <View className="flex-row justify-between items-center">
-        <View
-          className={`rounded-full px-3 py-1 ${
-            item.status === "SUBMITTED"
-              ? "bg-indigo-100"
+      <View
+        className={`rounded-full px-3 py-1 ${
+          item.status === "SUBMITTED"
+            ? "bg-indigo-100"
+            : item.status === "PAYMENT_SENT"
+              ? "bg-amber-100"
               : item.status === "COMPLETED"
                 ? "bg-emerald-100"
                 : "bg-cyan-100"
-          }`}
-        >
-          <Text
-            className={`text-xs font-bold ${
-              item.status === "SUBMITTED"
-                ? "text-indigo-700"
+        }`}
+      >
+        <Text
+          className={`text-xs font-bold ${
+            item.status === "SUBMITTED"
+              ? "text-indigo-700"
+              : item.status === "PAYMENT_SENT"
+                ? "text-amber-700"
                 : item.status === "COMPLETED"
                   ? "text-emerald-700"
                   : "text-cyan-700"
-            }`}
-          >
-            {item.status === "SUBMITTED"
-              ? "WORK SUBMITTED"
+          }`}
+        >
+          {item.status === "SUBMITTED"
+            ? "WORK SUBMITTED"
+            : item.status === "PAYMENT_SENT"
+              ? "WAITING FOR HELPER"
               : item.status === "COMPLETED"
                 ? "COMPLETED"
                 : "IN PROGRESS"}
-          </Text>
-        </View>
-
-        <Text className="text-emerald-700 font-bold text-xl">
-          ৳{item.budget}
         </Text>
       </View>
-
       <Text className="text-xl font-bold text-slate-900 mt-4">
         {item.title}
       </Text>

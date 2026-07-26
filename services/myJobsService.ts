@@ -100,7 +100,7 @@ export const getPosterActiveJobs = async () => {
       `,
     )
     .eq("poster_id", user.id)
-    .in("status", ["IN PROGRESS", "SUBMITTED"])
+    .in("status", ["IN PROGRESS", "SUBMITTED", "PAYMENT_SENT"])
     .order("updated_at", { ascending: false });
 
   if (error) throw error;

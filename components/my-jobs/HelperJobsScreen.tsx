@@ -10,7 +10,7 @@ import { useHelperJobs } from "../../hooks/useHelperJobs";
 
 const HelperJobsScreen = () => {
   const { jobs, loading, error } = useHelperJobs();
-
+  console.log("jobs from helperjobsscreen--->", jobs);
   const router = useRouter();
 
   const handleComplete = (proposal: any) => {
@@ -66,7 +66,7 @@ const HelperJobsScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingHorizontal: 16,
-          paddingBottom: 32,
+          paddingBottom: 120,
         }}
         ListEmptyComponent={
           <View className="items-center justify-center mt-28">

@@ -4,62 +4,58 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 
 import LoadingScreen from "../components/common/LoadingScreen";
-
 import SubmittedJobHeader from "../components/reviewSubmission/SubmittedJobHeader";
 import SubmittedJobCard from "../components/reviewSubmission/SubmittedJobCard";
 import SubmissionSummaryCard from "../components/reviewSubmission/SubmissionSummaryCard";
 import ProofImagesCard from "../components/reviewSubmission/ProofImagesCard";
-import SubmissionActions from "../components/reviewSubmission/SubmissionActions";
+
+import ProofImageUploader from "../components/completeJob/ProofImageUploader";
 
 import { useSubmittedWork } from "../hooks/useSubmittedWork";
 import {
-  approveCompletedJob,
+  sendPaymentProof,
   requestRevision,
 } from "../services/reviewSubmissionService";
+import { uploadImages } from "../utils/uploadImages";
+import ImageUploader from "../components/post/ImageUploader";
+import { SubmissionActions } from "../components/reviewSubmission/SubmissionActions";
 
 const ReviewSubmissionScreen = () => {
   const router = useRouter();
-
   const { proposalId, jobId } = useLocalSearchParams<{
     proposalId: string;
     jobId: string;
   }>();
-
   const { submission, loading, error } = useSubmittedWork(proposalId);
 
+  const [paymentImage, setPaymentImage] = useState<string[]>([]);
   const [actionLoading, setActionLoading] = useState(false);
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
+  if (error || !submission) return <LoadingScreen />;
 
-  if (error || !submission) {
-    return <LoadingScreen />;
-  }
+  const handleSendPayment = async () => {
+    if (paymentImage.length === 0) return;
 
-  const handleApprove = async () => {
     try {
       setActionLoading(true);
-
-      await approveCompletedJob(proposalId, jobId);
-
+      const uploaded = await uploadImages(paymentImage);
+      await sendPaymentProof(jobId, uploaded[0]);
       router.replace("/(tabs)/my-jobs");
-    } catch (error) {
-      console.log("Approve completion error:", error);
+    } catch (err) {
+      console.log("Send payment error:", err);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleRevision = async () => {
+  const handleCancel = async () => {
     try {
       setActionLoading(true);
-
       await requestRevision(jobId);
-
       router.replace("/(tabs)/my-jobs");
-    } catch (error) {
-      console.log("Revision request error:", error);
+    } catch (err) {
+      console.log("Cancel/send-back error:", err);
     } finally {
       setActionLoading(false);
     }
@@ -67,32 +63,23 @@ const ReviewSubmissionScreen = () => {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-      />
-
+      <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView className="flex-1 bg-slate-100">
         <SubmittedJobHeader />
-
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            padding: 16,
-            paddingBottom: 40,
-          }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         >
           <SubmittedJobCard job={submission.job} />
-
           <SubmissionSummaryCard summary={submission.completion_summary} />
-
           <ProofImagesCard images={submission.completion_images ?? []} />
 
+          <ImageUploader images={paymentImage} onChange={setPaymentImage} />
+
           <SubmissionActions
-            onApprove={handleApprove}
-            onReview={() => {}}
-            onReport={handleRevision}
+            onApprove={handleSendPayment}
+            onCancel={handleCancel}
+            approveLabel="Send Payment Screenshot"
             loading={actionLoading}
           />
         </ScrollView>

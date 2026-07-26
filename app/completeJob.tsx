@@ -14,6 +14,7 @@ import SubmitWorkButton from "../components/completeJob/SubmitWorkButton";
 
 import { useJobDetails } from "../hooks/useJobDetails";
 import { useCompleteJob } from "../hooks/useCompleteJob";
+import ImageUploader from "../components/post/ImageUploader";
 
 const CompleteJobScreen = () => {
   const { jobId, proposalId } = useLocalSearchParams<{
@@ -58,8 +59,7 @@ const CompleteJobScreen = () => {
 
           <CompletionSummaryInput value={summary} onChangeText={setSummary} />
 
-          <ProofImageUploader images={images} onChange={setImages} />
-
+          <ImageUploader images={images} onChange={setImages} />
           <CompletionTipsCard />
 
           <SubmitWorkButton loading={submitting} onPress={submit} />

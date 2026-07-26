@@ -12,7 +12,6 @@ export const submitCompletedWork = async ({
   summary: string;
   images: string[];
 }) => {
-  console.log("job id from complete job serice->", jobId);
   let uploadedImages: string[] = [];
 
   if (images.length) {
